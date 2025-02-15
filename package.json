@@ -4,8 +4,10 @@
   "description": "A standard format for defining databases, ensuring structured and consistent tables, columns, indexes and relationships",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build",
+  	"clean": "tsc --build --clean",
+    "start": "tsc --build && node dist/app"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,8 @@
   "homepage": "https://github.com/umtuk/open-db-docs#readme",
   "dependencies": {
     "@dbml/connector": "^3.9.5",
-    "@dbml/core": "^3.9.5"
+    "@dbml/core": "^3.9.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }
