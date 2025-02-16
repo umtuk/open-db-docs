@@ -5,9 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --build",
-  	"clean": "tsc --build --clean",
-    "start": "tsc --build && node dist/app"
+    "start": "ts-node -r tsconfig-paths/register src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -22,7 +20,10 @@
   "dependencies": {
     "@dbml/connector": "^3.9.5",
     "@dbml/core": "^3.9.5",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3"
   }
 }
