@@ -1,4 +1,4 @@
-class ColumnFormat {
+class FieldFormat {
     name: string;
     isRegExp: boolean = false;
 
@@ -7,12 +7,12 @@ class ColumnFormat {
         this.isRegExp = isRegExp || true;
     }
 
-    static importFromJsonObject(obj: any): ColumnFormat {
+    static importFromJsonObject(obj: any): FieldFormat {
         if (typeof obj.name !== "string" || typeof obj.isRegExp !== "boolean") {
-            throw new Error("Invalid JSON structure for ColumnFormat");
+            throw new Error("Invalid JSON structure for FieldFormat");
         }
 
-        return new ColumnFormat(obj.name, obj.isRegExp);
+        return new FieldFormat(obj.name, obj.isRegExp);
     }
 
     match(value: string): boolean {
@@ -24,4 +24,4 @@ class ColumnFormat {
     }
 }
 
-export default ColumnFormat;
+export default FieldFormat;

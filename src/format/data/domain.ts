@@ -1,15 +1,15 @@
-import TableFormat from "src/format/data/table";
-import { FormatStrategy, ReferenceTableStrategy } from "../strategy";
+import { FormatStrategy, ReferenceTableStrategy } from "src/format/strategy";
+import SchemaFormat from "src/format/data/schema";
 
 class DomainFormat {
     name: string;
     strategy: FormatStrategy;
-    tables: TableFormat[];
+    schemas: SchemaFormat[];
 
-    constructor(name: string, strategy?: FormatStrategy, tables?: TableFormat[]) {
+    constructor(name: string, strategy?: FormatStrategy, schemas?: SchemaFormat[]) {
         this.name = name;
         this.strategy = strategy || { referenceTableStrategy : ReferenceTableStrategy.INCLUDE_PK_OR_REF_COLUMN };
-        this.tables = tables || [];
+        this.schemas = schemas || [];
     }
 
     static importFromJsonObject(obj: any): DomainFormat {
@@ -23,7 +23,7 @@ class DomainFormat {
             const strategy = obj.strategy;
             const domain = new DomainFormat(obj.name, strategy);
             obj.tables.forEach((t: any) => {
-                domain.addTable(TableFormat.importFromJsonObject(t));
+                domain.addSchema(SchemaFormat.importFromJsonObject(t));
             });
 
             return domain;
@@ -33,8 +33,8 @@ class DomainFormat {
         }
     }
 
-    addTable(table: TableFormat) {
-        this.tables.push(table);
+    addSchema(schema: SchemaFormat) {
+        this.schemas.push(schema);
     }
 
     exportToJsonString(): string {

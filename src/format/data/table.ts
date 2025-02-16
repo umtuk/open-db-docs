@@ -1,14 +1,14 @@
-import ColumnFormat from "src/format/data/column";
+import FieldFormat from "src/format/data/field";
 
 class TableFormat {
     name: string = '';
     isRegExp: boolean = false;
-    columns: ColumnFormat[];
+    fields: FieldFormat[];
 
-    constructor(name?: string, isRegExp?: boolean, columns?: ColumnFormat[]) {
+    constructor(name?: string, isRegExp?: boolean, columns?: FieldFormat[]) {
         this.name = name || '*';
         this.isRegExp = isRegExp || true;
-        this.columns = columns || [];
+        this.fields = columns || [];
     }
 
     static importFromJsonObject(obj: any): TableFormat {
@@ -18,14 +18,14 @@ class TableFormat {
 
         const table = new TableFormat(obj.name, obj.isRegExp);
         obj.columns.forEach((c: any) => {
-            table.addColumn(ColumnFormat.importFromJsonObject(c));
+            table.addColumn(FieldFormat.importFromJsonObject(c));
         });
 
         return table;
     }
 
-    addColumn(column: ColumnFormat) {
-        this.columns.push(column);
+    addColumn(field: FieldFormat) {
+        this.fields.push(field);
     }
 
     match(value: string): boolean {
