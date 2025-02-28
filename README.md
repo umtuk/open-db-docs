@@ -1,6 +1,6 @@
 # open-db-docs
 
-A standard format for defining databases, ensuring structured and consistent tables, columns, indexes, and relationships.
+A JSON format for defining databases, ensuring structured and consistent tables, columns, indexes, and relationships.
 
 ## Features
 
@@ -36,16 +36,13 @@ open-db-docs> create-domain -h
 
 Output:
 ```
-Usage: cli [options] [command]
+Usage: cli create-domain [options]
+
+create default domain format
 
 Options:
-  -h, --help               display help for command
-
-Commands:
-  create-domain [options]  create default domain format
-  generate-dbml [options]  generate dbml using domain formats
-  exit                     exit the cli
-  help [command]           display help for command
+  -n, --name <type>  domain name
+  -h, --help         display help for command
 ```
 
 #### `generate-dbml`
@@ -78,6 +75,16 @@ Output:
 ```
 Goodbye!
 ```
+
+## Global Environment Variables
+
+The following environment variables can be configured to customize the behavior of `open-db-docs`:
+
+| Variable Name           | Default Value        | Description |
+|------------------------|---------------------|-------------|
+| `outDir`               | `out`               | Output directory for generated files. |
+| `formatFilename`       | `format.json`       | Filename for the generated format file. |
+| `generateDbmlFilename` | `generated.dbml`    | Filename for the generated DBML file. |
 
 ## Contributing
 
