@@ -1,11 +1,13 @@
-import Database, { RawDatabase } from "@dbml/core/types/model_structure/database";
+import Database from "@dbml/core/types/model_structure/database";
 import Field from "@dbml/core/types/model_structure/field";
 import Ref from "@dbml/core/types/model_structure/ref";
 import Schema from "@dbml/core/types/model_structure/schema";
 import Table from "@dbml/core/types/model_structure/table";
 import DomainFormat from "src/format/data/domain";
 import SchemaFormat from "src/format/data/schema";
+import TableFormat from "src/format/data/table";
 import { FormatStrategy, ReferenceTableStrategy } from "src/format/strategy";
+const _ = require("lodash");
 
 interface GenerateDatabase {
     model: Database,
@@ -20,6 +22,11 @@ interface GenerateSchemas {
 interface GenerateTables {
     schema: Schema,
     format: SchemaFormat
+}
+
+interface GenerateFields {
+    table: Table,
+    format: TableFormat
 }
 
 interface GenerateRefs {
@@ -46,34 +53,15 @@ export default class Generator {
             format: format
         });
 
-        let rawDatabase: RawDatabase = {
-            schemas: schemas,
-            tables: schemas.map(s => s.tables).flat(),
-            notes: model.notes,
-            enums: schemas
-                .map(s => s.enums)
-                .flat(),
-            refs: schemas.map(s => s.refs).flat(),
-            tableGroups: schemas
-                .map(s => s.tableGroups)
-                .flat(),
-            project: {
-                database_type: model.databaseType,
-                name: model.name,
-                note: {
-                    value: model.note,
-                    token: model.token
-                }
-            }
-        };
-
-        return new Database(rawDatabase);
+        let copied: Database = _.cloneDeep(model);
+        copied.schemas = schemas;
+        return copied;
     }
 
     private static generateSchemas(data: GenerateSchemas): Schema[] {
         return data.model.schemas
             .filter(s => data.format.schemas.some(f => f.match(s.name)))
-            .map(s => Object.assign({}, s))
+            .map(s => _.cloneDeep(s))
             .map(s => {
                 let tables: Table[] = this.generateTables({
                     schema: s,
@@ -90,7 +78,7 @@ export default class Generator {
                     targetTables: tables,
                     targetRefs: refs
                 });
-
+                
                 s.tables = tables.concat(refTables);
                 s.refs = refs;
                 return s;
@@ -100,16 +88,18 @@ export default class Generator {
     private static generateTables(data: GenerateTables): Table[] {
         return data.schema.tables
             .filter(t => data.format.tables.some(f => f.match(t.name)))
-            .map(t => Object.assign({}, t));
+            .map(t => _.cloneDeep(t));
     }
 
     private static generateRefs(data: GenerateRefs): Ref[] {
-        if (ReferenceTableStrategy.EXCLUDE_ALL === data.formatStrategy.referenceTableStrategy) {
-            return [];
-        }
-        return data.schema.refs
+        let referenceTableStrategy : ReferenceTableStrategy = data.formatStrategy.referenceTableStrategy;
+        let refs: Ref[] = data.schema.refs
             .filter(r => r.endpoints.some(e => data.targetTables.some(t => t.name === e.tableName)))
-            .map(r => Object.assign({}, r));
+            .map(r => _.cloneDeep(r));
+        if (ReferenceTableStrategy.EXCLUDE_ALL !== referenceTableStrategy) {
+            return refs;
+        }
+        return refs.filter(r => r.endpoints.every(e => data.targetTables.some(t => t.name === e.tableName)));
     }
 
     private static generateRefTables(data: GenerateRefTables): Table[] {
@@ -123,8 +113,8 @@ export default class Generator {
             .map(r => r.endpoints).flat()
             .map(e => e.fields).flat()
             .map(f => f.table)
-            .filter(t => data.targetTables.every(t2 => t2.name !== t.name))
-            .map(t => Object.assign({}, t));
+            .filter(t => data.targetTables.every(targetTable => targetTable.id !== t.id))
+            .map(t => _.cloneDeep(t));
 
         if (ReferenceTableStrategy.INCLUDE_ALL_COLUMN === referenceTableStrategy) {
             return refTables;
@@ -132,13 +122,11 @@ export default class Generator {
 
         return refTables.map(t => {
             t.fields = t.fields.filter(f => f.pk || data.targetRefs.map(r => r.endpoints).flat()
-                .map(e => e.fields).flat()
-                .some(f2 => {
-                    f2.table.schema.name === f.table.schema.name
-                        && f2.table.name === f.table.name
-                        && f2.name === f.name
-                }))
-                .map(f => Object.assign({}, f));
+                    .map(e => e.fields).flat()
+                    .some(targetField => targetField.id === f.id)
+                )
+                .map(f => _.cloneDeep(f));
+            t.indexes = [];
             return t;
         });
     }
