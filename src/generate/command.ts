@@ -24,7 +24,8 @@ let generateDbml: Command = new Command('generate-dbml')
         }
         return value;
     })
-    .action(options => generateDbmlAction(options));
+    .action(options => generateDbmlAction(options))
+    .exitOverride();
 
 function generateDbmlAction(options: any) {
     let domainFormats: DomainFormat[] = Formatter.loadDomains({

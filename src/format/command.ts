@@ -11,7 +11,8 @@ let createDomain: Command = new Command('create-domain')
         }
         return value;
     })
-    .action(options => createDomainAction(options));
+    .action(options => createDomainAction(options))
+    .exitOverride();
 
 function createDomainAction(options: any) {
     Formatter.createDomain({
