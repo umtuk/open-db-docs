@@ -16,14 +16,14 @@ class DomainFormat {
         try {
             if (typeof obj.name !== "string" 
                 || typeof obj.strategy !== "object"
-                || !Array.isArray(obj.tables)) {
+                || !Array.isArray(obj.schemas)) {
                 throw new Error("Invalid JSON structure for DomainFormat");
             }
 
             const strategy = obj.strategy;
             const domain = new DomainFormat(obj.name, strategy);
-            obj.tables.forEach((t: any) => {
-                domain.addSchema(SchemaFormat.importFromJsonObject(t));
+            obj.schemas.forEach((s: any) => {
+                domain.addSchema(SchemaFormat.importFromJsonObject(s));
             });
 
             return domain;

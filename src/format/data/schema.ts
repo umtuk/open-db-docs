@@ -1,18 +1,18 @@
-import TableFormat from "./table";
+import TableFormat from "src/format/data/table";
 
 class SchemaFormat {
     name: string = '';
     isRegExp: boolean = false;
     tables: TableFormat[];
 
-    constructor(name?: string, isRegExp?: boolean, columns?: TableFormat[]) {
-        this.name = name || '*';
+    constructor(name?: string, isRegExp?: boolean, tables?: TableFormat[]) {
+        this.name = name || '.*';
         this.isRegExp = isRegExp || true;
-        this.tables = columns || [];
+        this.tables = tables || [];
     }
 
     static importFromJsonObject(obj: any): SchemaFormat {
-        if (typeof obj.name !== "string" || typeof obj.isRegExp !== "boolean" || !Array.isArray(obj.columns)) {
+        if (typeof obj.name !== "string" || typeof obj.isRegExp !== "boolean" || !Array.isArray(obj.tables)) {
             throw new Error("Invalid JSON structure for SchemaFormat");
         }
 

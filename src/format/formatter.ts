@@ -1,8 +1,8 @@
-import Table from "@dbml/core/types/model_structure/table";
 import DomainFormat from "src/format/data/domain";
 import FileUtil from 'src/util/file';
-import { ReferenceTableStrategy } from "./strategy";
-import SchemaFormat from "./data/schema";
+import { ReferenceTableStrategy } from "src/format/strategy";
+import SchemaFormat from "src/format/data/schema";
+import TableFormat from "src/format/data/table";
 
 interface CreateDomain {
     name: string, 
@@ -28,10 +28,15 @@ export default class Formatter {
             return;
         }
 
+        let table: TableFormat = new TableFormat();
+
+        let schema: SchemaFormat = new SchemaFormat();
+        schema.addTable(table);
+
         let domain: DomainFormat = new DomainFormat(
             data.name, 
             { referenceTableStrategy : ReferenceTableStrategy.INCLUDE_PK_OR_REF_COLUMN },
-            [ new SchemaFormat() ]
+            [ schema ]
         );
         let jsonString = domain.exportToJsonString();
         FileUtil.writeFileSync(formatFilePath, jsonString);

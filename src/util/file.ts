@@ -2,6 +2,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export default class FileUtil {
+
+    static isFileSync(path: string): boolean {
+        return this.existsSync(path) && fs.statSync(path).isFile();
+    }
+
     static existsSync(path: string): boolean {
         return fs.existsSync(path);
     }
@@ -29,10 +34,12 @@ export default class FileUtil {
     }
 
     static readFileAsJSONSync(path: string): any {
-        return JSON.parse(
-            fs.readFileSync(path)
-                .toString()
-        );
+        return JSON.parse(this.readFileSync(path));
+    }
+
+    static readFileSync(path: string): any {
+        return fs.readFileSync(path)
+        .toString();
     }
 
     static writeFileSync(file: string, data: string, options?: fs.WriteFileOptions) {
