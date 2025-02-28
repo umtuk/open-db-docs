@@ -1,0 +1,22 @@
+{
+  "name": "auth",
+  "strategy": {
+    "referenceTableStrategy": "INCLUDE_ALL_COLUMN"
+  },
+  "schemas": [
+    {
+      "name": ".*",
+      "isRegExp": true,
+      "tables": [
+        {
+          "name": "authentication_flow",
+          "isRegExp": false
+        },
+        {
+          "name": "authentication_execution",
+          "isRegExp": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,327 @@
+Table "username_login_failure" {
+  "realm_id" varchar(36) [not null]
+  "username" varchar(255) [not null]
+  "failed_login_not_before" integer
+  "last_failure" bigint
+  "last_ip_failure" varchar(255)
+  "num_failures" integer
+
+  Indexes {
+    (realm_id, username) [pk, name: "CONSTRAINT_17-2"]
+  }
+}
+
+Table "user_entity" {
+  "id" varchar(36) [pk, not null]
+  "email" varchar(255)
+  "email_constraint" varchar(255)
+  "email_verified" boolean [not null, default: false]
+  "enabled" boolean [not null, default: false]
+  "federation_link" varchar(255)
+  "first_name" varchar(255)
+  "last_name" varchar(255)
+  "realm_id" varchar(255)
+  "username" varchar(255)
+  "created_timestamp" bigint
+  "service_account_client_link" varchar(255)
+  "not_before" integer [not null, default: 0]
+
+  Indexes {
+    (realm_id, email_constraint) [unique, name: "uk_dykn684sl8up1crfei6eckhd7"]
+    (realm_id, username) [unique, name: "uk_ru8tt6t700s9v50bu18ws5ha6"]
+    email [name: "idx_user_email"]
+    (realm_id, service_account_client_link) [name: "idx_user_service_account"]
+  }
+}
+
+Table "user_attribute" {
+  "name" varchar(255) [not null]
+  "value" varchar(255)
+  "user_id" varchar(36) [not null]
+  "id" varchar(36) [pk, not null, default: `'sybase-needs-something-here'::charactervarying`]
+
+  Indexes {
+    user_id [name: "idx_user_attribute"]
+    (name, value) [name: "idx_user_attribute_name"]
+  }
+}
+
+Table "user_federation_provider" {
+  "id" varchar(36) [pk, not null]
+  "changed_sync_period" integer
+  "display_name" varchar(255)
+  "full_sync_period" integer
+  "last_sync" integer
+  "priority" integer
+  "provider_name" varchar(255)
+  "realm_id" varchar(36)
+
+  Indexes {
+    realm_id [name: "idx_usr_fed_prv_realm"]
+  }
+}
+
+Table "user_federation_config" {
+  "user_federation_provider_id" varchar(36) [not null]
+  "value" varchar(255)
+  "name" varchar(255) [not null]
+
+  Indexes {
+    (user_federation_provider_id, name) [pk, name: "constraint_f9"]
+  }
+}
+
+Table "user_required_action" {
+  "user_id" varchar(36) [not null]
+  "required_action" varchar(255) [not null, default: `' '::charactervarying`]
+
+  Indexes {
+    (required_action, user_id) [pk, name: "constraint_required_action"]
+    user_id [name: "idx_user_reqactions"]
+  }
+}
+
+Table "user_role_mapping" {
+  "role_id" varchar(255) [not null]
+  "user_id" varchar(36) [not null]
+
+  Indexes {
+    (role_id, user_id) [pk, name: "constraint_c"]
+    user_id [name: "idx_user_role_mapping"]
+  }
+}
+
+Table "user_session" {
+  "id" varchar(36) [pk, not null]
+  "auth_method" varchar(255)
+  "ip_address" varchar(255)
+  "last_session_refresh" integer
+  "login_username" varchar(255)
+  "realm_id" varchar(255)
+  "remember_me" boolean [not null, default: false]
+  "started" integer
+  "user_id" varchar(255)
+  "user_session_state" integer
+  "broker_session_id" varchar(255)
+  "broker_user_id" varchar(255)
+}
+
+Table "user_session_note" {
+  "user_session" varchar(36) [not null]
+  "name" varchar(255) [not null]
+  "value" varchar(2048)
+
+  Indexes {
+    (user_session, name) [pk, name: "constraint_usn_pk"]
+  }
+}
+
+Table "user_consent" {
+  "id" varchar(36) [pk, not null]
+  "client_id" varchar(255)
+  "user_id" varchar(36) [not null]
+  "created_date" bigint
+  "last_updated_date" bigint
+  "client_storage_provider" varchar(36)
+  "external_client_id" varchar(255)
+
+  Indexes {
+    (client_id, client_storage_provider, external_client_id, user_id) [unique, name: "uk_jkuwuvd56ontgsuhogm8uewrt"]
+    user_id [name: "idx_user_consent"]
+  }
+}
+
+Table "user_federation_mapper" {
+  "id" varchar(36) [pk, not null]
+  "name" varchar(255) [not null]
+  "federation_provider_id" varchar(36) [not null]
+  "federation_mapper_type" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+
+  Indexes {
+    federation_provider_id [name: "idx_usr_fed_map_fed_prv"]
+    realm_id [name: "idx_usr_fed_map_realm"]
+  }
+}
+
+Table "user_federation_mapper_config" {
+  "user_federation_mapper_id" varchar(36) [not null]
+  "value" varchar(255)
+  "name" varchar(255) [not null]
+
+  Indexes {
+    (user_federation_mapper_id, name) [pk, name: "constraint_fedmapper_cfg_pm"]
+  }
+}
+
+Table "client_user_session_note" {
+  "name" varchar(255) [not null]
+  "value" varchar(2048)
+  "client_session" varchar(36) [not null]
+
+  Indexes {
+    (client_session, name) [pk, name: "constr_cl_usr_ses_note"]
+  }
+}
+
+Table "offline_user_session" {
+  "user_session_id" varchar(36) [not null]
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "created_on" integer [not null]
+  "offline_flag" varchar(4) [not null]
+  "data" text
+  "last_session_refresh" integer [not null, default: 0]
+
+  Indexes {
+    (user_session_id, offline_flag) [pk, name: "constraint_offl_us_ses_pk2"]
+    created_on [name: "idx_offline_uss_createdon"]
+    (offline_flag, created_on, user_session_id) [name: "idx_offline_uss_preload"]
+    (user_id, realm_id, offline_flag) [name: "idx_offline_uss_by_user"]
+    (realm_id, offline_flag, user_session_id) [name: "idx_offline_uss_by_usersess"]
+  }
+}
+
+Table "user_group_membership" {
+  "group_id" varchar(36) [not null]
+  "user_id" varchar(36) [not null]
+
+  Indexes {
+    (group_id, user_id) [pk, name: "constraint_user_group"]
+    user_id [name: "idx_user_group_mapping"]
+  }
+}
+
+Table "fed_user_attribute" {
+  "id" varchar(36) [pk, not null]
+  "name" varchar(255) [not null]
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "storage_provider_id" varchar(36)
+  "value" varchar(2024)
+
+  Indexes {
+    (user_id, realm_id, name) [name: "idx_fu_attribute"]
+  }
+}
+
+Table "fed_user_consent" {
+  "id" varchar(36) [pk, not null]
+  "client_id" varchar(255)
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "storage_provider_id" varchar(36)
+  "created_date" bigint
+  "last_updated_date" bigint
+  "client_storage_provider" varchar(36)
+  "external_client_id" varchar(255)
+
+  Indexes {
+    (realm_id, user_id) [name: "idx_fu_consent_ru"]
+    (user_id, client_storage_provider, external_client_id) [name: "idx_fu_cnsnt_ext"]
+    (user_id, client_id) [name: "idx_fu_consent"]
+  }
+}
+
+Table "fed_user_credential" {
+  "id" varchar(36) [pk, not null]
+  "salt" bytea
+  "type" varchar(255)
+  "created_date" bigint
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "storage_provider_id" varchar(36)
+  "user_label" varchar(255)
+  "secret_data" text
+  "credential_data" text
+  "priority" integer
+
+  Indexes {
+    (user_id, type) [name: "idx_fu_credential"]
+    (realm_id, user_id) [name: "idx_fu_credential_ru"]
+  }
+}
+
+Table "fed_user_group_membership" {
+  "group_id" varchar(36) [not null]
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "storage_provider_id" varchar(36)
+
+  Indexes {
+    (group_id, user_id) [pk, name: "constr_fed_user_group"]
+    (user_id, group_id) [name: "idx_fu_group_membership"]
+    (realm_id, user_id) [name: "idx_fu_group_membership_ru"]
+  }
+}
+
+Table "fed_user_required_action" {
+  "required_action" varchar(255) [not null, default: `' '::charactervarying`]
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "storage_provider_id" varchar(36)
+
+  Indexes {
+    (required_action, user_id) [pk, name: "constr_fed_required_action"]
+    (user_id, required_action) [name: "idx_fu_required_action"]
+    (realm_id, user_id) [name: "idx_fu_required_action_ru"]
+  }
+}
+
+Table "fed_user_role_mapping" {
+  "role_id" varchar(36) [not null]
+  "user_id" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "storage_provider_id" varchar(36)
+
+  Indexes {
+    (role_id, user_id) [pk, name: "constr_fed_user_role"]
+    (user_id, role_id) [name: "idx_fu_role_mapping"]
+    (realm_id, user_id) [name: "idx_fu_role_mapping_ru"]
+  }
+}
+
+Table "federated_user" {
+  "id" varchar(255) [pk, not null]
+  "storage_provider_id" varchar(255)
+  "realm_id" varchar(36) [not null]
+}
+
+Table "user_consent_client_scope" {
+  "user_consent_id" varchar(36) [not null]
+  "scope_id" varchar(36) [not null]
+
+  Indexes {
+    (user_consent_id, scope_id) [pk, name: "constraint_grntcsnt_clsc_pm"]
+    user_consent_id [name: "idx_usconsent_clscope"]
+  }
+}
+
+Table "fed_user_consent_cl_scope" {
+  "user_consent_id" varchar(36) [not null]
+  "scope_id" varchar(36) [not null]
+
+  Indexes {
+    (user_consent_id, scope_id) [pk, name: "constraint_fgrntcsnt_clsc_pm"]
+  }
+}
+
+Ref:"user_entity"."id" < "user_attribute"."user_id"
+
+Ref:"user_federation_provider"."id" < "user_federation_config"."user_federation_provider_id"
+
+Ref:"user_entity"."id" < "user_required_action"."user_id"
+
+Ref:"user_entity"."id" < "user_role_mapping"."user_id"
+
+Ref:"user_session"."id" < "user_session_note"."user_session"
+
+Ref:"user_entity"."id" < "user_consent"."user_id"
+
+Ref:"user_federation_provider"."id" < "user_federation_mapper"."federation_provider_id"
+
+Ref:"user_federation_mapper"."id" < "user_federation_mapper_config"."user_federation_mapper_id"
+
+Ref:"user_entity"."id" < "user_group_membership"."user_id"
+
+Ref:"user_consent"."id" < "user_consent_client_scope"."user_consent_id"
