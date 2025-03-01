@@ -17,15 +17,27 @@ enum ParseFormat {
     SNOWFLAKE = "snowflake",
 }
 
-interface ParseBySql {
-    sql: string,
+interface ParseByFile {
+    file: string,
+    format: ParseFormat
+}
+
+interface ParseByStr {
+    str: string,
     format: ParseFormat
 }
 
 class DatabaseParser {
-    static parseBySql(data: ParseBySql): Database {
-        let sql: string = FileUtil.readFileSync(data.sql);
-        return parser.parse(sql, data.format);
+    static parseByFile(data: ParseByFile): Database {
+        let str: string = FileUtil.readFileSync(data.file);
+        return this.parseByStr({
+            str: str,
+            format: data.format
+        });
+    }
+
+    static parseByStr(data: ParseByStr): Database {
+        return parser.parse(data.str, data.format);
     }
 }
 

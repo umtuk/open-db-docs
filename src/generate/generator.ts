@@ -24,11 +24,6 @@ interface GenerateTables {
     format: SchemaFormat
 }
 
-interface GenerateFields {
-    table: Table,
-    format: TableFormat
-}
-
 interface GenerateRefs {
     schema: Schema,
     formatStrategy: FormatStrategy, 

@@ -21,13 +21,19 @@ program.command('exit')
 });
 
 function prompt(): void {
-    rl.question('open-db-docs> ', (input: string) => {
-        const args: string[] = input.split(' ');
-        program.parseAsync(['node', 'cli', ...args]).catch((err: Error) => {
-            console.error(`Error: ${err.message}`);
-        }).finally(() => {
-            prompt();
-        });
+    rl.question('open-db-docs> ', async (input: string) => {
+        const args: string[] = input.trim().split(/\s+/);
+        if (args[0] === '') {
+            return prompt();
+        }
+
+        try {
+            await program.parseAsync(['node', 'cli', ...args]);
+        } catch (err: any) {
+            console.error(err.message);
+        }
+
+        prompt();
     });
 }
 
