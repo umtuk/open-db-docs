@@ -4,8 +4,8 @@
   "description": "A standard format for defining databases, ensuring structured and consistent tables, columns, indexes and relationships",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node -r tsconfig-paths/register src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,13 @@
   "homepage": "https://github.com/umtuk/open-db-docs#readme",
   "dependencies": {
     "@dbml/connector": "^3.9.5",
-    "@dbml/core": "^3.9.5"
+    "@dbml/core": "^3.9.5",
+    "commander": "^13.1.0",
+    "fs": "^0.0.1-security",
+    "lodash": "^4.17.21",
+    "path": "^0.12.7",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3"
   }
 }

@@ -1,0 +1,239 @@
+Table "realm" {
+  "id" varchar(36) [pk, not null]
+  "access_code_lifespan" integer
+  "user_action_lifespan" integer
+  "access_token_lifespan" integer
+  "account_theme" varchar(255)
+  "admin_theme" varchar(255)
+  "email_theme" varchar(255)
+  "enabled" boolean [not null, default: false]
+  "events_enabled" boolean [not null, default: false]
+  "events_expiration" bigint
+  "login_theme" varchar(255)
+  "name" varchar(255) [unique]
+  "not_before" integer
+  "password_policy" varchar(2550)
+  "registration_allowed" boolean [not null, default: false]
+  "remember_me" boolean [not null, default: false]
+  "reset_password_allowed" boolean [not null, default: false]
+  "social" boolean [not null, default: false]
+  "ssl_required" varchar(255)
+  "sso_idle_timeout" integer
+  "sso_max_lifespan" integer
+  "update_profile_on_soc_login" boolean [not null, default: false]
+  "verify_email" boolean [not null, default: false]
+  "master_admin_client" varchar(36)
+  "login_lifespan" integer
+  "internationalization_enabled" boolean [not null, default: false]
+  "default_locale" varchar(255)
+  "reg_email_as_username" boolean [not null, default: false]
+  "admin_events_enabled" boolean [not null, default: false]
+  "admin_events_details_enabled" boolean [not null, default: false]
+  "edit_username_allowed" boolean [not null, default: false]
+  "otp_policy_counter" integer [default: 0]
+  "otp_policy_window" integer [default: 1]
+  "otp_policy_period" integer [default: 30]
+  "otp_policy_digits" integer [default: 6]
+  "otp_policy_alg" varchar(36) [default: `'HmacSHA1'::charactervarying`]
+  "otp_policy_type" varchar(36) [default: `'totp'::charactervarying`]
+  "browser_flow" varchar(36)
+  "registration_flow" varchar(36)
+  "direct_grant_flow" varchar(36)
+  "reset_credentials_flow" varchar(36)
+  "client_auth_flow" varchar(36)
+  "offline_session_idle_timeout" integer [default: 0]
+  "revoke_refresh_token" boolean [not null, default: false]
+  "access_token_life_implicit" integer [default: 0]
+  "login_with_email_allowed" boolean [not null, default: true]
+  "duplicate_emails_allowed" boolean [not null, default: false]
+  "docker_auth_flow" varchar(36)
+  "refresh_token_max_reuse" integer [default: 0]
+  "allow_user_managed_access" boolean [not null, default: false]
+  "sso_max_lifespan_remember_me" integer [not null, default: 0]
+  "sso_idle_timeout_remember_me" integer [not null, default: 0]
+  "default_role" varchar(255)
+
+  Indexes {
+    master_admin_client [name: "idx_realm_master_adm_cli"]
+  }
+}
+
+Table "realm_attribute" {
+  "name" varchar(255) [not null]
+  "realm_id" varchar(36) [not null]
+  "value" text
+
+  Indexes {
+    (name, realm_id) [pk, name: "constraint_9"]
+    realm_id [name: "idx_realm_attr_realm"]
+  }
+}
+
+Table "realm_events_listeners" {
+  "realm_id" varchar(36) [not null]
+  "value" varchar(255) [not null]
+
+  Indexes {
+    (realm_id, value) [pk, name: "constr_realm_events_listeners"]
+    realm_id [name: "idx_realm_evt_list_realm"]
+  }
+}
+
+Table "realm_required_credential" {
+  "type" varchar(255) [not null]
+  "form_label" varchar(255)
+  "input" boolean [not null, default: false]
+  "secret" boolean [not null, default: false]
+  "realm_id" varchar(36) [not null]
+
+  Indexes {
+    (realm_id, type) [pk, name: "constraint_92"]
+  }
+}
+
+Table "realm_smtp_config" {
+  "realm_id" varchar(36) [not null]
+  "value" varchar(255)
+  "name" varchar(255) [not null]
+
+  Indexes {
+    (realm_id, name) [pk, name: "constraint_e"]
+  }
+}
+
+Table "realm_supported_locales" {
+  "realm_id" varchar(36) [not null]
+  "value" varchar(255) [not null]
+
+  Indexes {
+    (realm_id, value) [pk, name: "constr_realm_supported_locales"]
+    realm_id [name: "idx_realm_supp_local_realm"]
+  }
+}
+
+Table "realm_enabled_event_types" {
+  "realm_id" varchar(36) [not null]
+  "value" varchar(255) [not null]
+
+  Indexes {
+    (realm_id, value) [pk, name: "constr_realm_enabl_event_types"]
+    realm_id [name: "idx_realm_evt_types_realm"]
+  }
+}
+
+Table "realm_default_groups" {
+  "realm_id" varchar(36) [not null]
+  "group_id" varchar(36) [unique, not null]
+
+  Indexes {
+    (realm_id, group_id) [pk, name: "constr_realm_default_groups"]
+    realm_id [name: "idx_realm_def_grp_realm"]
+  }
+}
+
+Table "realm_localizations" {
+  "realm_id" varchar(255) [not null]
+  "locale" varchar(255) [not null]
+  "texts" text [not null]
+
+  Indexes {
+    (realm_id, locale) [pk]
+  }
+}
+
+Table "keycloak_role" {
+  "id" varchar(36) [pk, not null]
+  "realm" varchar(36)
+}
+
+Table "user_federation_provider" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "identity_provider" {
+  "internal_id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "identity_provider_mapper" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36) [not null]
+}
+
+Table "authenticator_config" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "authentication_flow" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "authentication_execution" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "user_federation_mapper" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36) [not null]
+}
+
+Table "required_action_provider" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "component" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36)
+}
+
+Table "client_initial_access" {
+  "id" varchar(36) [pk, not null]
+  "realm_id" varchar(36) [not null]
+}
+
+Table "default_client_scope" {
+  "realm_id" varchar(36) [not null]
+}
+
+Ref:"realm"."id" < "keycloak_role"."realm"
+
+Ref:"realm"."id" < "realm_attribute"."realm_id"
+
+Ref:"realm"."id" < "realm_events_listeners"."realm_id"
+
+Ref:"realm"."id" < "realm_required_credential"."realm_id"
+
+Ref:"realm"."id" < "realm_smtp_config"."realm_id"
+
+Ref:"realm"."id" < "user_federation_provider"."realm_id"
+
+Ref:"realm"."id" < "identity_provider"."realm_id"
+
+Ref:"realm"."id" < "realm_supported_locales"."realm_id"
+
+Ref:"realm"."id" < "realm_enabled_event_types"."realm_id"
+
+Ref:"realm"."id" < "identity_provider_mapper"."realm_id"
+
+Ref:"realm"."id" < "authenticator_config"."realm_id"
+
+Ref:"realm"."id" < "authentication_flow"."realm_id"
+
+Ref:"realm"."id" < "authentication_execution"."realm_id"
+
+Ref:"realm"."id" < "user_federation_mapper"."realm_id"
+
+Ref:"realm"."id" < "required_action_provider"."realm_id"
+
+Ref:"realm"."id" < "realm_default_groups"."realm_id"
+
+Ref:"realm"."id" < "component"."realm_id"
+
+Ref:"realm"."id" < "client_initial_access"."realm_id"
+
+Ref:"realm"."id" < "default_client_scope"."realm_id"

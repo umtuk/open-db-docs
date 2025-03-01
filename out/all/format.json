@@ -1,0 +1,18 @@
+{
+  "name": "all",
+  "strategy": {
+    "referenceTableStrategy": "INCLUDE_ALL_COLUMN"
+  },
+  "schemas": [
+    {
+      "name": ".*",
+      "isRegExp": true,
+      "tables": [
+        {
+          "name": ".*",
+          "isRegExp": true
+        }
+      ]
+    }
+  ]
+}

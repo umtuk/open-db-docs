@@ -1,0 +1,157 @@
+Table "authentication_flow" {
+  "id" varchar(36) [pk, not null]
+  "alias" varchar(255)
+  "description" varchar(255)
+  "realm_id" varchar(36)
+  "provider_id" varchar(36) [not null, default: `'basic-flow'::charactervarying`]
+  "top_level" boolean [not null, default: false]
+  "built_in" boolean [not null, default: false]
+
+  Indexes {
+    realm_id [name: "idx_auth_flow_realm"]
+  }
+}
+
+Table "authentication_execution" {
+  "id" varchar(36) [pk, not null]
+  "alias" varchar(255)
+  "authenticator" varchar(36)
+  "realm_id" varchar(36)
+  "flow_id" varchar(36)
+  "requirement" integer
+  "priority" integer
+  "authenticator_flow" boolean [not null, default: false]
+  "auth_flow_id" varchar(36)
+  "auth_config" varchar(36)
+
+  Indexes {
+    (realm_id, flow_id) [name: "idx_auth_exec_realm_flow"]
+    flow_id [name: "idx_auth_exec_flow"]
+  }
+}
+
+Table "realm" {
+  "id" varchar(36) [pk, not null]
+  "access_code_lifespan" integer
+  "user_action_lifespan" integer
+  "access_token_lifespan" integer
+  "account_theme" varchar(255)
+  "admin_theme" varchar(255)
+  "email_theme" varchar(255)
+  "enabled" boolean [not null, default: false]
+  "events_enabled" boolean [not null, default: false]
+  "events_expiration" bigint
+  "login_theme" varchar(255)
+  "name" varchar(255) [unique]
+  "not_before" integer
+  "password_policy" varchar(2550)
+  "registration_allowed" boolean [not null, default: false]
+  "remember_me" boolean [not null, default: false]
+  "reset_password_allowed" boolean [not null, default: false]
+  "social" boolean [not null, default: false]
+  "ssl_required" varchar(255)
+  "sso_idle_timeout" integer
+  "sso_max_lifespan" integer
+  "update_profile_on_soc_login" boolean [not null, default: false]
+  "verify_email" boolean [not null, default: false]
+  "master_admin_client" varchar(36)
+  "login_lifespan" integer
+  "internationalization_enabled" boolean [not null, default: false]
+  "default_locale" varchar(255)
+  "reg_email_as_username" boolean [not null, default: false]
+  "admin_events_enabled" boolean [not null, default: false]
+  "admin_events_details_enabled" boolean [not null, default: false]
+  "edit_username_allowed" boolean [not null, default: false]
+  "otp_policy_counter" integer [default: 0]
+  "otp_policy_window" integer [default: 1]
+  "otp_policy_period" integer [default: 30]
+  "otp_policy_digits" integer [default: 6]
+  "otp_policy_alg" varchar(36) [default: `'HmacSHA1'::charactervarying`]
+  "otp_policy_type" varchar(36) [default: `'totp'::charactervarying`]
+  "browser_flow" varchar(36)
+  "registration_flow" varchar(36)
+  "direct_grant_flow" varchar(36)
+  "reset_credentials_flow" varchar(36)
+  "client_auth_flow" varchar(36)
+  "offline_session_idle_timeout" integer [default: 0]
+  "revoke_refresh_token" boolean [not null, default: false]
+  "access_token_life_implicit" integer [default: 0]
+  "login_with_email_allowed" boolean [not null, default: true]
+  "duplicate_emails_allowed" boolean [not null, default: false]
+  "docker_auth_flow" varchar(36)
+  "refresh_token_max_reuse" integer [default: 0]
+  "allow_user_managed_access" boolean [not null, default: false]
+  "sso_max_lifespan_remember_me" integer [not null, default: 0]
+  "sso_idle_timeout_remember_me" integer [not null, default: 0]
+  "default_role" varchar(255)
+
+  Indexes {
+    master_admin_client [name: "idx_realm_master_adm_cli"]
+  }
+}
+
+Table "realm" {
+  "id" varchar(36) [pk, not null]
+  "access_code_lifespan" integer
+  "user_action_lifespan" integer
+  "access_token_lifespan" integer
+  "account_theme" varchar(255)
+  "admin_theme" varchar(255)
+  "email_theme" varchar(255)
+  "enabled" boolean [not null, default: false]
+  "events_enabled" boolean [not null, default: false]
+  "events_expiration" bigint
+  "login_theme" varchar(255)
+  "name" varchar(255) [unique]
+  "not_before" integer
+  "password_policy" varchar(2550)
+  "registration_allowed" boolean [not null, default: false]
+  "remember_me" boolean [not null, default: false]
+  "reset_password_allowed" boolean [not null, default: false]
+  "social" boolean [not null, default: false]
+  "ssl_required" varchar(255)
+  "sso_idle_timeout" integer
+  "sso_max_lifespan" integer
+  "update_profile_on_soc_login" boolean [not null, default: false]
+  "verify_email" boolean [not null, default: false]
+  "master_admin_client" varchar(36)
+  "login_lifespan" integer
+  "internationalization_enabled" boolean [not null, default: false]
+  "default_locale" varchar(255)
+  "reg_email_as_username" boolean [not null, default: false]
+  "admin_events_enabled" boolean [not null, default: false]
+  "admin_events_details_enabled" boolean [not null, default: false]
+  "edit_username_allowed" boolean [not null, default: false]
+  "otp_policy_counter" integer [default: 0]
+  "otp_policy_window" integer [default: 1]
+  "otp_policy_period" integer [default: 30]
+  "otp_policy_digits" integer [default: 6]
+  "otp_policy_alg" varchar(36) [default: `'HmacSHA1'::charactervarying`]
+  "otp_policy_type" varchar(36) [default: `'totp'::charactervarying`]
+  "browser_flow" varchar(36)
+  "registration_flow" varchar(36)
+  "direct_grant_flow" varchar(36)
+  "reset_credentials_flow" varchar(36)
+  "client_auth_flow" varchar(36)
+  "offline_session_idle_timeout" integer [default: 0]
+  "revoke_refresh_token" boolean [not null, default: false]
+  "access_token_life_implicit" integer [default: 0]
+  "login_with_email_allowed" boolean [not null, default: true]
+  "duplicate_emails_allowed" boolean [not null, default: false]
+  "docker_auth_flow" varchar(36)
+  "refresh_token_max_reuse" integer [default: 0]
+  "allow_user_managed_access" boolean [not null, default: false]
+  "sso_max_lifespan_remember_me" integer [not null, default: 0]
+  "sso_idle_timeout_remember_me" integer [not null, default: 0]
+  "default_role" varchar(255)
+
+  Indexes {
+    master_admin_client [name: "idx_realm_master_adm_cli"]
+  }
+}
+
+Ref:"realm"."id" < "authentication_flow"."realm_id"
+
+Ref:"realm"."id" < "authentication_execution"."realm_id"
+
+Ref:"authentication_flow"."id" < "authentication_execution"."flow_id"

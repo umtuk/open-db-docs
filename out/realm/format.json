@@ -1,0 +1,18 @@
+{
+  "name": "realm",
+  "strategy": {
+    "referenceTableStrategy": "INCLUDE_PK_OR_REF_COLUMN"
+  },
+  "schemas": [
+    {
+      "name": ".*",
+      "isRegExp": true,
+      "tables": [
+        {
+          "name": ".*realm.*",
+          "isRegExp": true
+        }
+      ]
+    }
+  ]
+}
