@@ -25,7 +25,16 @@ Run the CLI:
 npm run start
 ```
 
+Once inside the CLI, you can use the following commands:
+
 ### Available Commands
+
+#### `help`
+Display help information about the CLI or specific commands.
+
+```sh
+open-db-docs> help
+```
 
 #### `create-domain`
 Create a default domain format.
@@ -59,9 +68,10 @@ Usage: cli generate-dbml [options]
 generate dbml using domain formats
 
 Options:
-  -s, --sql <type>     SQL file path
-  -f, --format <type>  SQL file database format (mysql, postgres, ...)
-  -h, --help           display help for command
+  -s, --sql <type>         SQL file path
+  -f, --format <type>      SQL file database format (mysql, postgres, ...)
+  -c, --connection <type>  Database connection string (e.g., postgresql://user:password@localhost:5432/dbname)
+  -h, --help               display help for command
 ```
 
 #### `exit`
@@ -76,6 +86,36 @@ Output:
 Goodbye!
 ```
 
+## Examples
+
+### Creating a Domain Format
+To create a default domain format with the name `hello`:
+
+```sh
+open-db-docs> create-domain -n hello
+```
+
+### Generating DBML from a Database Connection
+To generate DBML using a PostgreSQL database connection string:
+
+```sh
+open-db-docs> generate-dbml -c postgresql://postgres:s3cret@localhost:5432/keycloak -f postgres
+```
+
+### Generating DBML from an SQL File
+To generate DBML from an existing SQL file:
+
+```sh
+open-db-docs> generate-dbml -s example/keycloak.sql -f postgres
+```
+
+### Exiting the CLI
+To exit the CLI:
+
+```sh
+open-db-docs> exit
+```
+
 ## Global Environment Variables
 
 The following environment variables can be configured to customize the behavior of `open-db-docs`:
@@ -86,13 +126,18 @@ The following environment variables can be configured to customize the behavior 
 | `formatFilename`       | `format.json`       | Filename for the generated format file. |
 | `generateDbmlFilename` | `generated.dbml`    | Filename for the generated DBML file. |
 
-## Contributing
+## Development and Self-Management
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature-branch`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
-4. Push to the branch (`git push origin feature-branch`)
-5. Create a new Pull Request
+At this time, external contributions are not being accepted. However, if you wish to modify or extend `open-db-docs` for personal or organizational use, you can follow these steps to manage your own version:
+
+1. Fork the repository to your own GitHub account.
+2. Clone your fork to your local development environment.
+3. Create a feature branch to make changes (`git checkout -b feature-branch`).
+4. Implement your changes and commit them (`git commit -m 'Describe your changes'`).
+5. Push the changes to your fork (`git push origin feature-branch`).
+6. Manage updates and modifications independently as needed.
+
+For any discussions or questions, please consider managing them within your own team or network.
 
 ## License
 
